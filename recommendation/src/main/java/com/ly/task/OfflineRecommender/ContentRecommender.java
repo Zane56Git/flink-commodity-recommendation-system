@@ -12,7 +12,10 @@ import org.apache.flink.types.Row;
 import org.apache.flink.util.StringValueUtils;
 import scala.Tuple3;
 
-
+/**
+ * 内容推荐
+ * flink连接mysql拆分商品标签（该类暂无保存处理数据）
+ */
 public class ContentRecommender {
     public static void contentRecommend() throws Exception {
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();

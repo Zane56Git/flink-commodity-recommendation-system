@@ -8,3 +8,29 @@ create 'historyHotProducts', {NAME => 'p'}
 create 'onlineHotProducts', {NAME => 'p'}
 create 'onlineRecommend', {NAME => 'p'}
 create 'onlineHot', {NAME => 'p'}
+
+=========================================
+create 'goodProducts', {NAME => 'p'}
+create 'productUser', {NAME => 'p'}
+create 'product', {NAME => 'p'}
+create 'user', {NAME => 'p'}
+
+
+disable 'rating'
+drop 'rating'
+
+describe userProduct
+
+create 'itemCFRecommend','p'
+create 'similarity','p'
+
+create 'rating', {NAME => 'p'}
+
+create 'rating','log'
+
+create 'userProduct','product'
+create 'productUser','user'
+
+scan 'onlineRecommend'
+
+create 'recentHotProducts','p'

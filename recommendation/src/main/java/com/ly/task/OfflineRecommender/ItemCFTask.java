@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * 从hbase获取用户评分表，物品协同过滤
+ */
 public class ItemCFTask {
     // 未使用 flink 的方法，该方法内部使用了 Map，如果数据量巨大内存会溢出。
     public static void itemSimilarity() throws Exception {
@@ -59,6 +61,7 @@ public class ItemCFTask {
             String[] products = key.split("_");
             String product1 = products[0];
             String product2 = products[1];
+            // 余弦公式运算
             Double similarity = similarityMap.get(key)/Math.sqrt(productUserCountMap.get(product1) * productUserCountMap.get(product2));
             // 保留五位小数
             String res = String.format("%.5f", similarity);
@@ -67,6 +70,10 @@ public class ItemCFTask {
         }
     }
 
+    /**
+     * 相似性分析
+     * @throws Exception
+     */
     public static void calSimilarityUsingFlink() throws Exception {
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
         BatchTableEnvironment bbTableEnv = BatchTableEnvironment.create(env);
@@ -123,6 +130,7 @@ public class ItemCFTask {
     }
     public static void main(String[] args) throws Exception {
         calSimilarityUsingFlink();
+        //itemSimilarity();
     }
 
 }

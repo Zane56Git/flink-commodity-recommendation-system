@@ -10,7 +10,11 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
 import java.util.Properties;
-
+/**
+ * 实时推荐任务（消费kafka）
+ * 基于用户评分行为，对用户进行实时推荐
+ *
+ */
 public class UserActionRecommenderTask {
     /**
      * 基于用户评分行为，对用户进行实时推荐

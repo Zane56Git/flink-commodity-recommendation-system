@@ -1,10 +1,13 @@
 package com.ly.dataSource;
 
+import com.ly.hbase.TableInputFormat;
+import com.ly.hbase.TableInputSplit;
 import com.ly.util.Property;
-import org.apache.flink.addons.hbase.TableInputFormat;
+
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.configuration.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,13 +80,26 @@ public class HbaseTableSource extends TableInputFormat<Tuple4<String, String, Do
     @Override
     public void configure(Configuration parameters) {
         try {
-            this.table = createTable();
+            this.table = (HTable) createTable();
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.scan = new Scan();
     }
-    private HTable createTable() throws IOException {
+
+//    private HTable createTable2() throws IOException {
+//        LOG.info("Initializing HBaseConfiguration");
+//        org.apache.hadoop.conf.Configuration conf = HBaseConfiguration.create();
+//        conf.set("hbase.rootdir", Property.getStrValue("hbase.rootdir"));
+//        conf.set("hbase.zookeeper.quorum", Property.getStrValue("hbase.zookeeper.quorum"));
+//        conf.set("hbase.client.scanner.timeout.period", Property.getStrValue("hbase.client.scanner.timeout.period"));
+//        conf.set("hbase.rpc.timeout", Property.getStrValue("hbase.rpc.timeout"));
+//        System.out.println(Property.getStrValue("hbase.rootdir"));
+//        conn = ConnectionFactory.createConnection(conf);
+//        return new HTable(conf, this.getTableName());
+//    }
+
+    private Table createTable() throws IOException {
         LOG.info("Initializing HBaseConfiguration");
         org.apache.hadoop.conf.Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.rootdir", Property.getStrValue("hbase.rootdir"));
@@ -92,7 +108,11 @@ public class HbaseTableSource extends TableInputFormat<Tuple4<String, String, Do
         conf.set("hbase.rpc.timeout", Property.getStrValue("hbase.rpc.timeout"));
         System.out.println(Property.getStrValue("hbase.rootdir"));
         conn = ConnectionFactory.createConnection(conf);
-        return new HTable(conf, this.getTableName());
+        System.out.println("this.getTableName()>>>>"+this.getTableName());
+        Table table = conn.getTable(TableName.valueOf(this.getTableName()));
+
+        //ClusterConnection connection, TableBuilderBase builder, RpcRetryingCallerFactory rpcCallerFactory, RpcControllerFactory rpcControllerFactory, ExecutorService pool
+        return table;
     }
 
     @Override

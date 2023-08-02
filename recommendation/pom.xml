@@ -13,7 +13,7 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <flink.version>1.9.0</flink.version>
+        <flink.version>1.10.0</flink.version>
     </properties>
     <dependencies>
         <dependency>
@@ -55,13 +55,19 @@
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
-            <version>1.2.12</version>
+            <version>2.4.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
-            <version>1.2.12</version>
+            <version>2.4.5</version>
         </dependency>
+
+        <!--<dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+            <version>2.4.5</version>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
         <dependency>
@@ -70,10 +76,15 @@
             <version>3.0.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.bahir/flink-connector-redis -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-redis_2.10</artifactId>
             <version>1.1.5</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.bahir</groupId>
+            <artifactId>flink-connector-redis_2.11</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
@@ -94,11 +105,72 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-hbase -->
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-hbase-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-hbase_2.11</artifactId>
-            <version>1.4.2</version>
+            <version>1.10.0</version>
+
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime-web_2.11</artifactId>
+            <version>1.10.0</version>
+        </dependency>
+
+
+
+        <!--
+               <dependency>
+                   <groupId>org.apache.hadoop</groupId>
+                   <artifactId>hadoop-hdfs</artifactId>
+                   <version>2.10.0</version>
+                   <exclusions>
+                       <exclusion>
+                           <groupId>xml-apis</groupId>
+                           <artifactId>xml-apis</artifactId>
+                       </exclusion>
+                   </exclusions>
+               </dependency>
+        -->
+               <!--  Hbase使用  -->
+        <!--
+       <dependency>
+           <groupId>org.apache.hadoop</groupId>
+           <artifactId>hadoop-common</artifactId>
+           <version>2.10.0</version>
+           <exclusions>
+               <exclusion>
+                   <groupId>log4j</groupId>
+                   <artifactId>*</artifactId>
+               </exclusion>
+               <exclusion>
+                   <groupId>org.slf4j</groupId>
+                   <artifactId>slf4j-log4j12</artifactId>
+               </exclusion>
+           </exclusions>
+
+       </dependency>
+       -->
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-hbase_2.11</artifactId>
+            <version>${flink.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>2.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

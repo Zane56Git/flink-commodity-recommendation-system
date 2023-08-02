@@ -2,6 +2,7 @@ package com.ly.task.OfflineRecommender;
 
 import com.ly.dataSource.HbaseTableSource;
 import com.ly.sink.HbaseSink;
+import com.ly.util.OsUtil;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.api.java.DataSet;
@@ -18,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+/**
+ * 分析历史热门，最近热门，历史好评商品
+ */
 public class StatisticsTask {
     private static ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
     private static BatchTableEnvironment benv = BatchTableEnvironment.create(env);
@@ -25,13 +29,16 @@ public class StatisticsTask {
     * 分析历史热门，最近热门，历史好评商品
     * */
     public static void main(String[] args) throws Exception {
+        if (OsUtil.isWindows()){
+            System.setProperty("hadoop.home.dir", "D:\\windows_dev_soft\\hadoop\\hadoop-2.10.0");
+        }
         env = ExecutionEnvironment.getExecutionEnvironment();
         DataSet dataSet = env.createInput(new HbaseTableSource());
         Table table = benv.fromDataSet(dataSet, "f0, f1, f2, f3").renameColumns("f0 as userId, f1 as productId, f2 as score, f3 as timestamp");
         // 注册表为 “rating”
         benv.registerTable("rating", table);
         historyHotProducts();
-//        recentHotProducts(dataSet);
+        recentHotProducts(dataSet);
         goodProducts();
         env.execute();
     }
@@ -49,6 +56,13 @@ public class StatisticsTask {
 
         Table table1 = benv.sqlQuery(sql);
         TupleTypeInfo tupleType = new TupleTypeInfo<Tuple2<String, Long>>(Types.STRING, Types.LONG);
+
+
+        //打印出当前引用的hbase-client-xxx.jar的具体路径
+//        java.net.URL res = StatisticsTask.class.getClassLoader().getResource("org.apache.hadoop.hbase.client.HTable.class");
+//        System.out.println("HTableDescriptor came from " + res.getPath());
+
+
         // table sink -> hbase 'historyHotProducts'
         DataSet result = benv.toDataSet(table1, tupleType);
         result.print();
@@ -74,7 +88,7 @@ public class StatisticsTask {
         TupleTypeInfo tupleType = new TupleTypeInfo<Tuple2<String, Long>>(Types.STRING, Types.LONG, Types.STRING);
         // table sink -> hbase 'historyHotProducts'
         DataSet result = benv.toDataSet(table2, tupleType);
-//        result.print();
+        result.print();
         result.output(new HbaseSink("recentHotProducts"));
     }
 
@@ -83,7 +97,7 @@ public class StatisticsTask {
         TupleTypeInfo tupleType = new TupleTypeInfo<Tuple2<String, Double>>(Types.STRING, Types.DOUBLE);
         // table sink -> hbase 'goodProducts'
         DataSet result = benv.toDataSet(table, tupleType);
-//        result.print();
+        result.print();
         result.output(new HbaseSink("goodProducts"));
     }
 }

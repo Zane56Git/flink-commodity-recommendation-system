@@ -31,11 +31,11 @@ public class UserService {
             modelMap.addAttribute("msg", "用户不存在");
             return modelMap;
         }
-        if(!bCryptPasswordEncoder.matches(user.getPassword(), user2.getPassword())) {
+        /*if(!bCryptPasswordEncoder.matches(user.getPassword(), user2.getPassword())) {
             modelMap.addAttribute("result", false);
             modelMap.addAttribute("msg", "密码错误");
             return modelMap;
-        }
+        }*/
         modelMap.addAttribute("result", true);
         modelMap.addAttribute("user", user2);
         return modelMap;

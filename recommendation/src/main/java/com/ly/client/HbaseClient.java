@@ -1,7 +1,7 @@
 package com.ly.client;
 
+import com.ly.util.OsUtil;
 import com.ly.util.Property;
-import org.apache.flink.table.expressions.In;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
@@ -15,6 +15,10 @@ public class HbaseClient {
     public static Connection conn;
 
     static {
+        //https://www.cnblogs.com/tijun/p/7567664.html
+        if (OsUtil.isWindows()){
+            System.setProperty("hadoop.home.dir", "D:\\windows_dev_soft\\hadoop\\hadoop-2.10.0");
+        }
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.rootdir", Property.getStrValue("hbase.rootdir"));
         conf.set("hbase.zookeeper.quorum", Property.getStrValue("hbase.zookeeper.quorum"));
@@ -73,7 +77,10 @@ public class HbaseClient {
      * @throws IOException
      */
     public static List<Map.Entry> getRow(String tableName, String rowKey) throws IOException {
-        System.setProperty("hadoop.home.dir", "D:\\Program\\hadoop");
+        if (OsUtil.isWindows()){
+            System.setProperty("hadoop.home.dir", "D:\\windows_dev_soft\\hadoop\\hadoop-2.10.0");
+        }
+
         Table table = conn.getTable(TableName.valueOf(tableName));
         byte[] row = Bytes.toBytes(rowKey);
         Get get = new Get(row);

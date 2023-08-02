@@ -2,9 +2,7 @@ package com.ly.recommend_backend.controller;
 
 
 import com.ly.recommend_backend.entity.ProductEntity;
-import com.ly.recommend_backend.entity.User;
 import com.ly.recommend_backend.service.RecommendService;
-import com.ly.recommend_backend.service.UserService;
 import com.ly.recommend_backend.util.UDFKafkaProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +34,14 @@ public class ProductController {
     * */
     @RequestMapping(value = "/historyhot", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public ModelMap getHistoryHotProducts(@RequestParam("num") int num) {
+    public ModelMap getHistoryHotProducts(@RequestParam("num") int num) throws IOException {
         ModelMap model = new ModelMap();
         List<ProductEntity> recommendations = null;
+        recommendations = recommendService.getHistoryHotOrGoodProducts(num, HISTORY_HOT_PRODCUTS);
+        model.addAttribute("success", true);
+        model.addAttribute("products", recommendations);
         try {
-            recommendations = recommendService.getHistoryHotOrGoodProducts(num, HISTORY_HOT_PRODCUTS);
-            model.addAttribute("success", true);
-            model.addAttribute("products", recommendations);
+
         } catch (Exception e) {
             model.addAttribute("success", false);
             model.addAttribute("msg", e.getMessage());
@@ -140,7 +139,7 @@ public class ProductController {
         return model;
     }
 
-    /*
+    /**
     * 商品评分
     * 将评分数据发送到 kafka ‘rating’
     * */
@@ -174,16 +173,11 @@ public class ProductController {
      * */
     @RequestMapping(value="/stream", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public ModelMap onlineRecs(@RequestParam("userId") String userId) {
+    public ModelMap onlineRecs(@RequestParam("userId") String userId) throws IOException {
         ModelMap model = new ModelMap();
-        try {
-            List<ProductEntity> res = recommendService.getOnlineRecs(userId, ONLINE_RECOMMEND);
-            model.addAttribute("success", true);
-            model.addAttribute("products", res);
-        } catch (Exception e) {
-            model.addAttribute("success", false);
-            model.addAttribute("msg", "查询失败");
-        }
+        List<ProductEntity> res = recommendService.getOnlineRecs(userId, ONLINE_RECOMMEND);
+        model.addAttribute("success", true);
+        model.addAttribute("products", res);
         return model;
     }
 

@@ -20,7 +20,7 @@
 
 - 用户登录/注册系统。
 - 用户对商品进行评分。
-- 评分数据通过 Kafka 发送到推荐模块的实时推荐任务中。
+- 评分数据通过 Kafka 发送到推荐模块的实时推荐任务中F。
 - 系统执行实时推荐任务，并且将数据存储到 hbase 的 rating 和 userProduct 表中。实时任务包括：实时 topN 以及 基于用户行为推荐。
 - 实时 topN 将计算结果存储到 hbase 的 onlineHot 表中，基于用户行为推荐将计算结果存储到 hbase 的表 onlineRecommend 中。
 
@@ -177,5 +177,40 @@
 - [ ] 制作 docker 部署项目
 
 ###  
+ 
 
-**最后，作者正在经历2021秋招，如果您觉得本项目不错，欢迎给个 star!**
+补充：
+启动流程：
+先启动前端；
+再启动后端服务recommend_backend，这时首页还没推荐数据；
+接下来执行recommendation的DataLoaderTask初始化产品数据，但搜索页面可以查到商品数据了；
+接下来在商品也可以进行评分，埋点数据存到kafka中；
+启动recommendation的TopNProductTask通过flink消费kafka数据，通过窗口统计点击量，保存热门数据到hbase的onlineHot表；
+启动recommendation的UserActionRecommenderTask消费kafka数据；保存用户行为数据到userProduct；
+启动recommendation的StatisticsTask统计分析近期热门数据保存到hbase的recentHotProducts、历史好评商品数据保存到goodProducts；
+
+
+
+清除数据再认证
+
+
+
+com.ly.task.OnlineRecommender.TopNProductTask
+com.ly.task.OnlineRecommender.UserActionRecommenderTask
+com.ly.task.OfflineRecommender.StatisticsTask
+
+
+
+
+部署，启动前后端
+
+1、数据入库
+
+商品信息存储在`recommendation/src/main/resources/product.csv` 文件里，我们运行一个 flink 任务将数据装载到 mysql 中。对应的表是我们之前创建的 `product` 表
+
+- 启动 flink ,运行 `recommendation/.../task/DataLoader/DataLoaderTask.java`
+- 商品信息存储到 mysql 中
+注意product表缺少score字段
+
+CDH 下 hue 继承 hbase
+参考：[hbase]hbase_conf_dir=/etc/hbase/confthrift_transport=buffered

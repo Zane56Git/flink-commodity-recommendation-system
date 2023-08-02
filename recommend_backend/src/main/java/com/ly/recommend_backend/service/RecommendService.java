@@ -19,7 +19,9 @@ public class RecommendService {
 
 
     public List<ProductEntity> getHistoryHotOrGoodProducts(int num, String tableName) throws IOException {
-        List<ProductEntity> recommendEntityList = new ArrayList<>(num);
+        List<ProductEntity> recommendEntityList = new ArrayList<>();
+        //待排查
+        //List<ProductEntity> recommendEntityList = new ArrayList<>(num);
         // 查出所有热门商品 list
         List<String> allProductsId = HbaseClient.getAllKey(tableName);
         List<Pair<String, Double>> list = new ArrayList<>();
@@ -38,11 +40,15 @@ public class RecommendService {
             }
         });
 
-        for(int i = 1; i <= num; i++) {
+//        for(int i = 1; i <= num; i++) {
+        for(int i = 1; i < list.size(); i++) {
             ProductEntity product = getProductEntity(Integer.parseInt(list.get(i).getKey()));
             product.setScore(3.5);
             System.out.println(product);
-            recommendEntityList.add(product);
+            if (product!=null){
+                recommendEntityList.add(product);
+            }
+
         }
         return recommendEntityList;
     }
@@ -75,6 +81,7 @@ public class RecommendService {
     }
 
     public List<ProductEntity> getOnlineRecs(String userId, String tableName) throws IOException {
+        //scan 'onlineRecommend'
         List<Map.Entry> allProducts = HbaseClient.getRow(tableName, userId);
         List<ProductEntity> res = new ArrayList<>(allProducts.size());
         for (Map.Entry entry : allProducts) {

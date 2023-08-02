@@ -19,6 +19,10 @@ import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolC
 
 import java.util.Properties;
 
+/**
+ * 实时推荐任务（消费kafka数据统计热门数据）
+ * 窗口统计点击量,存入 hbase
+ */
 public class TopNProductTask {
     private static final int topCount = 10;
 

@@ -7,10 +7,8 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.configuration.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +45,9 @@ public class HbaseSink implements OutputFormat<Object> {
         conf.set("hbase.rpc.timeout", Property.getStrValue("hbase.rpc.timeout"));
         System.out.println(Property.getStrValue("hbase.rootdir"));
         this.conn = ConnectionFactory.createConnection(conf);
-        this.table =  new HTable(conf, this.tableName);
+        //this.table =  new HTable(conf, this.tableName);
+        Table table = conn.getTable(TableName.valueOf(this.tableName));
+        this.table = (HTable) table;
     }
 
     @Override

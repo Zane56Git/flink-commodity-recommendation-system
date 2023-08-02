@@ -10,7 +10,9 @@ public class Property {
     private final static String CONFIG_NAME = "config.properties";
     static {
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_NAME);
-        System.setProperty("hadoop.home.dir", "D:\\Program\\hadoop");
+        if (OsUtil.isWindows()){
+            System.setProperty("hadoop.home.dir", "D:\\windows_dev_soft\\hadoop\\hadoop-2.10.0");
+        }
         contextProperties = new Properties();
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
@@ -19,7 +21,7 @@ public class Property {
             System.err.println(">>>flink-2-hbase<<<资源文件加载失败!");
             e.printStackTrace();
         }
-//        System.out.println(">>>flink-2-hbase<<<资源文件加载成功");
+        System.out.println(">>>flink-2-hbase<<<资源文件加载成功");
     }
 
     public static String getStrValue(String key) {

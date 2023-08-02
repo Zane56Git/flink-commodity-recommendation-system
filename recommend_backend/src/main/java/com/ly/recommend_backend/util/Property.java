@@ -10,7 +10,9 @@ public class Property {
     private final static String CONFIG_NAME = "config.properties";
     static {
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_NAME);
-        System.setProperty("hadoop.home.dir", "D:\\Program\\hadoop");
+        if (OsUtil.isWindows()){
+            System.setProperty("hadoop.home.dir", "D:\\windows_dev_soft\\hadoop\\hadoop-2.10.0");
+        }
         contextProperties = new Properties();
         try {
             InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");

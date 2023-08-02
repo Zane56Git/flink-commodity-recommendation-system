@@ -2,6 +2,8 @@ package com.ly.client;
 
 import com.ly.util.Property;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +13,15 @@ public class RedisClient {
 
     //静态代码块初始化 redis
     static {
-        jedis = new Jedis(Property.getStrValue("redis.host"), Property.getIntegerValue("redis.port"));
+//        JedisPoolConfig poolConfig = new JedisPoolConfig();
+//        poolConfig.setMaxTotal(10);
+//        poolConfig.setMaxWaitMillis(1000);
+//        JedisPool jedisPool = new JedisPool(poolConfig, Property.getStrValue("redis.host"), Property.getIntegerValue("redis.port"));
+//        jedis = jedisPool.getResource();
+        jedis = new Jedis(Property.getStrValue("redis.host"), Property.getIntegerValue("redis.port"),6000,6000);
+        jedis.auth(Property.getStrValue("redis.password"));
         jedis.select(Property.getIntegerValue("redis.db"));
+
     }
 
     public static String getData(String s) {
