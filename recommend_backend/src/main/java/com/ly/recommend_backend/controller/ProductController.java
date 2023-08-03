@@ -29,7 +29,7 @@ public class ProductController {
     private RecommendService recommendService;
 
     /**
-    * 热门推荐
+    * 热门推荐-debug
     *
     * */
     @RequestMapping(value = "/historyhot", produces = "application/json", method = RequestMethod.GET)
@@ -57,7 +57,7 @@ public class ProductController {
     }
 
     /*
-    * 优质商品推荐
+    * 优质商品推荐-debug
     * */
     @RequestMapping(value = "/goodproducts", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody

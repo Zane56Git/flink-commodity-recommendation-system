@@ -111,6 +111,18 @@
 <!--            <version>${druid.version}</version>-->
 <!--        </dependency>-->
 
+        <!--官方jdbc使用8123端口-->
+        <dependency>
+            <groupId>ru.yandex.clickhouse</groupId>
+            <artifactId>clickhouse-jdbc</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.2</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

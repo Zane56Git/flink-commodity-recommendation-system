@@ -1,9 +1,14 @@
 package com.ly.recommend_backend.service;
 
 
+import com.ly.recommend_backend.config.ProgramConfig;
 import com.ly.recommend_backend.dao.ProductInterface;
+import com.ly.recommend_backend.entity.ConnEntiy;
+import com.ly.recommend_backend.util.ClickHouseJdbcUtils;
+import com.ly.recommend_backend.util.ConfigSingletonUtil;
 import com.ly.recommend_backend.util.HbaseClient;
 import com.ly.recommend_backend.entity.ProductEntity;
+import com.ly.recommend_backend.util.JdbcUtils;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,19 +19,25 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-public class RecommendService {
+public  class RecommendService {
     private Logger logger = LoggerFactory.getLogger(RecommendService.class);
-
+    @Autowired
+    private ProductInterface productInterface;
 
     public List<ProductEntity> getHistoryHotOrGoodProducts(int num, String tableName) throws IOException {
         List<ProductEntity> recommendEntityList = new ArrayList<>();
-        //待排查
+        /**
+         * - flink 将  hbase `rating` 表加载到内存中，根据 productId group，并且统计出现次数
+         * - 根据出现次数逆序排序。
+         */
         //List<ProductEntity> recommendEntityList = new ArrayList<>(num);
         // 查出所有热门商品 list
-        List<String> allProductsId = HbaseClient.getAllKey(tableName);
+        //List<String> allProductsId = HbaseClient.getAllKey(tableName);
+        List<String> allProductsId = queryHotByCk(tableName);
         List<Pair<String, Double>> list = new ArrayList<>();
         for(String productId : allProductsId) {
-            List<Map.Entry> row = HbaseClient.getRow(tableName, productId);
+            //List<Map.Entry> row = HbaseClient.getRow(tableName, productId);
+            List<Map.Entry> row = queryHotByProductIdCK(tableName, productId);
             if(row != null) {
                 double count = (double) row.get(0).getValue();
                 list.add(new Pair<String, Double>(productId, count));
@@ -53,8 +64,31 @@ public class RecommendService {
         return recommendEntityList;
     }
 
-    @Autowired
-    private ProductInterface productInterface;
+    /**
+     * 通过productId查询
+     * @param tableName
+     * @param productId
+     * @return
+     */
+    private List<Map.Entry> queryHotByProductIdCK(String tableName, String productId) {
+
+        //通过productId查询
+        // todo
+        return new ArrayList<>();
+    }
+
+
+    private List<String>  queryHotByCk(String tableName) {
+        ProgramConfig appConfig = ConfigSingletonUtil.getInstance().getConfig();
+        String url = appConfig.getClickhouse().getUrl();
+        String user = appConfig.getClickhouse().getUsername();
+        String password = appConfig.getClickhouse().getPassword();
+        JdbcUtils jdbcUtils = new ClickHouseJdbcUtils();
+        ConnEntiy connEntiy = new ConnEntiy(null, url, user, password);
+        String[] params = {};
+        jdbcUtils.QueryResultSet(jdbcUtils.connection(connEntiy), "", params);
+        return new ArrayList<>();
+    }
 
     public ProductEntity getProductEntity(int productId) {
         ProductEntity productEntity = productInterface.getProductByProductId(productId);
