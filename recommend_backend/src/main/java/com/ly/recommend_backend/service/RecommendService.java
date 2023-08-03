@@ -79,14 +79,19 @@ public  class RecommendService {
 
 
     private List<String>  queryHotByCk(String tableName) {
+//        ProgramConfig appConfig = ConfigSingletonUtil.getInstance().getConfig();
+//        String url = appConfig.getClickhouse().getUrl();
+//        String user = appConfig.getClickhouse().getUsername();
+//        String password = appConfig.getClickhouse().getPassword();
         ProgramConfig appConfig = ConfigSingletonUtil.getInstance().getConfig();
-        String url = appConfig.getClickhouse().getUrl();
-        String user = appConfig.getClickhouse().getUsername();
-        String password = appConfig.getClickhouse().getPassword();
+        String url = "jdbc:clickhouse://www.dev.com:8123/default" ;
+        String user = "";
+        String password = "";
         JdbcUtils jdbcUtils = new ClickHouseJdbcUtils();
         ConnEntiy connEntiy = new ConnEntiy(null, url, user, password);
         String[] params = {};
-        jdbcUtils.QueryResultSet(jdbcUtils.connection(connEntiy), "", params);
+        String sql="select * from demo";
+        jdbcUtils.QueryResultSet(jdbcUtils.connection(connEntiy), sql, params);
         return new ArrayList<>();
     }
 

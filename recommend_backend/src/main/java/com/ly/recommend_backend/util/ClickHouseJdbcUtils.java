@@ -21,8 +21,8 @@ public class ClickHouseJdbcUtils implements JdbcUtils {
     public Connection connection(ConnEntiy connEntiy) {
         Connection conn = null;
         try {
-            Class.forName(connEntiy.getDriverName());
-            conn = DriverManager.getConnection(connEntiy.getUrl(), connEntiy.getUser(), connEntiy.getPassword());
+            //Class.forName(connEntiy.getDriverName());
+            conn = DriverManager.getConnection(connEntiy.getUrl());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("connection fail ,please check your entities");
